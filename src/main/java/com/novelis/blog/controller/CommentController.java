@@ -13,12 +13,12 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import com.novelis.blog.consts.consts;
+
 
 import java.util.UUID;
 
 @RestController
-@RequestMapping(consts.API_URI + "/articles/{slug}/comments")
+@RequestMapping("/api/v1/articles/{slug}/comments")
 @RequiredArgsConstructor
 public class CommentController {
 

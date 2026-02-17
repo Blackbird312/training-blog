@@ -10,28 +10,28 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.web.SecurityFilterChain;
-import com.novelis.blog.consts.consts;
+
 
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
-
+    private static final String API_URI = "/api/v1";
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 // Public endpoints (lecture)
-                .requestMatchers(HttpMethod.GET, consts.API_URI + "/articles/**").permitAll()
+                .requestMatchers(HttpMethod.GET, API_URI + "/articles/**").permitAll()
 
                 // Comments: lecture public, ajout nécessite login
-                .requestMatchers(HttpMethod.GET, consts.API_URI + "/articles/*/comments/**").permitAll()
-                .requestMatchers(HttpMethod.POST, consts.API_URI + "/articles/*/comments/**").authenticated()
+                .requestMatchers(HttpMethod.GET, API_URI + "/articles/*/comments/**").permitAll()
+                .requestMatchers(HttpMethod.POST, API_URI + "/articles/*/comments/**").authenticated()
 
                 // Articles: création / modification réservée
-                .requestMatchers(HttpMethod.POST, consts.API_URI + "/articles/**").hasAnyRole("AUTHOR", "ADMIN")
-                .requestMatchers(HttpMethod.PUT, consts.API_URI + "/articles/**").hasAnyRole("AUTHOR", "ADMIN")
-                .requestMatchers(HttpMethod.DELETE, consts.API_URI + "/articles/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, API_URI + "/articles/**").hasAnyRole("AUTHOR", "ADMIN")
+                .requestMatchers(HttpMethod.PUT, API_URI + "/articles/**").hasAnyRole("AUTHOR", "ADMIN")
+                .requestMatchers(HttpMethod.DELETE, API_URI + "/articles/**").hasRole("ADMIN")
 
                 // Tout le reste
                 .anyRequest().authenticated()

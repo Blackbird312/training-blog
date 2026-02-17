@@ -15,13 +15,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import com.novelis.blog.consts.consts;
+
 
 import java.net.URI;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(consts.API_URI + "/articles")
+@RequestMapping("/api/v1/articles")
 @RequiredArgsConstructor
 public class ArticleController {
 
