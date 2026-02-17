@@ -1,0 +1,181 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-init-create-tables
+      author: elmimouni
+      changes:
+
+        # USERS (optionnel: profil local minimal)
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: keycloak_id
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: full_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: created_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+
+        - createIndex:
+            tableName: users
+            indexName: idx_users_keycloak_id
+            columns:
+              - column:
+                  name: keycloak_id
+
+        # ARTICLES
+        - createTable:
+            tableName: articles
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: author_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: title
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: slug
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: content
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: published
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+
+        - addUniqueConstraint:
+            tableName: articles
+            columnNames: slug
+            constraintName: uq_articles_slug
+
+        - createIndex:
+            tableName: articles
+            indexName: idx_articles_author_id
+            columns:
+              - column:
+                  name: author_id
+
+        - createIndex:
+            tableName: articles
+            indexName: idx_articles_created_at
+            columns:
+              - column:
+                  name: created_at
+
+        # COMMENTS
+        - createTable:
+            tableName: comments
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: article_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: author_id
+                  type: uuid
+                  constraints:
+                    nullable: true
+              - column:
+                  name: content
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+
+        - createIndex:
+            tableName: comments
+            indexName: idx_comments_article_id
+            columns:
+              - column:
+                  name: article_id
+
+        - createIndex:
+            tableName: comments
+            indexName: idx_comments_article_created_at
+            columns:
+              - column:
+                  name: article_id
+              - column:
+                  name: created_at
+
+        # FK constraints
+        - addForeignKeyConstraint:
+            baseTableName: articles
+            baseColumnNames: author_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_articles_author
+
+        - addForeignKeyConstraint:
+            baseTableName: comments
+            baseColumnNames: article_id
+            referencedTableName: articles
+            referencedColumnNames: id
+            constraintName: fk_comments_article
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: comments
+            baseColumnNames: author_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_comments_author
+            deferrable: false
+            initiallyDeferred: false
