@@ -35,15 +35,15 @@ public class ArticleServiceImpl implements ArticleService {
         String slug = generateUniqueSlug(request.getTitle());
 
         Article entity = Article.builder()
-            .id(UUID.randomUUID())
-            .authorId(authorId)
-            .title(request.getTitle())
-            .slug(slug)
-            .content(request.getContent())
-            .published(Boolean.TRUE.equals(request.getPublished()))
-            .createdAt(now)
-            .updatedAt(now)
-            .build();
+                .id(UUID.randomUUID())
+                .authorId(authorId)
+                .title(request.getTitle())
+                .slug(slug)
+                .content(request.getContent())
+                .published(Boolean.TRUE.equals(request.getPublished()))
+                .createdAt(now)
+                .updatedAt(now)
+                .build();
 
         Article saved = articleRepository.save(entity);
         return articleMapper.toResponse(saved);
@@ -53,7 +53,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Transactional(readOnly = true)
     public ArticleResponse getBySlug(String slug) {
         Article entity = articleRepository.findBySlug(slug)
-            .orElseThrow(() -> new IllegalArgumentException("Article not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Article not found"));
         return articleMapper.toResponse(entity);
     }
 
@@ -65,7 +65,7 @@ public class ArticleServiceImpl implements ArticleService {
         if (query == null || query.isBlank()) {
             page = articleRepository.findByPublishedTrue(pageable);
         } else {
-            page = articleRepository.findByPublishedTrueAndTitleContainingIgnoreCase(query.trim(), pageable);
+            page = articleRepository.searchPublishedByKeyword(query.trim(), pageable);
         }
 
         return page.map(articleMapper::toResponse);
@@ -74,11 +74,12 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ArticleResponse update(UUID id, ArticleUpdateRequest request) {
         Article entity = articleRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Article not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Article not found"));
 
         articleMapper.updateEntityFromDto(request, entity);
 
-        // If title changes, we regenerate slug (optional behavior; you can lock slug if you prefer)
+        // If title changes, we regenerate slug (optional behavior; you can lock slug if
+        // you prefer)
         entity.setSlug(generateUniqueSlug(entity.getTitle()));
 
         entity.setPublished(Boolean.TRUE.equals(request.getPublished()));
@@ -116,14 +117,14 @@ public class ArticleServiceImpl implements ArticleService {
      */
     private static String slugify(String input) {
         String normalized = Normalizer.normalize(input, Normalizer.Form.NFD)
-            .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
 
         String slug = normalized
-            .toLowerCase(Locale.ROOT)
-            .replaceAll("[^a-z0-9\\s-]", "")
-            .trim()
-            .replaceAll("\\s+", "-")
-            .replaceAll("-{2,}", "-");
+                .toLowerCase(Locale.ROOT)
+                .replaceAll("[^a-z0-9\\s-]", "")
+                .trim()
+                .replaceAll("\\s+", "-")
+                .replaceAll("-{2,}", "-");
 
         return slug.isBlank() ? UUID.randomUUID().toString() : slug;
     }
