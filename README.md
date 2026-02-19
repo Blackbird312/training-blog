@@ -59,13 +59,21 @@ The API supports **Articles**, **Comments**, **pagination**, and **keyword searc
 ## 📂 Project Structure (simplified)
 
 src/main/java/com/novelis/blog
+
 ├── config/ # SecurityConfig, JWT role mapping
+
 ├── controller/ # ArticleController, CommentController
+
 ├── domain/ # JPA entities
+
 ├── dto/ # Request / Response DTOs
+
 ├── mapper/ # MapStruct mappers
+
 ├── repository/ # Spring Data JPA repositories
+
 ├── service/ # Services & implementations
+
 └── BlogApplication.java
 
 
@@ -98,8 +106,10 @@ spring.liquibase.enabled=true
 spring.liquibase.change-log=classpath:db/changelog/db.changelog-master.yaml
 
 spring.security.oauth2.resourceserver.jwt.issuer-uri=http://localhost:8081/realms/blog
+```
+
 # optional:
-# spring.security.oauth2.resourceserver.jwt.audiences=blog-api
+spring.security.oauth2.resourceserver.jwt.audiences=blog-api
 🐳 Run Infrastructure (Docker)
 Start PostgreSQL & Keycloak
 docker compose up -d
@@ -109,25 +119,25 @@ URL: http://localhost:8081
 Login: admin / admin
 
 🔐 Keycloak Setup (Minimum)
-Create a Realm: blog
+## Create a Realm: blog
 
-Create a Client: blog-api
+## Create a Client: blog-api
 
-Enable Direct Access Grants
+## Enable Direct Access Grants
 
-Create Roles:
+## Create Roles:
 
 AUTHOR
 
 ADMIN
 
-Create a user:
+## Create a user:
 
 username: author1
 
 password: secret (Temporary = OFF)
 
-assign role: AUTHOR
+Assign role: AUTHOR
 
 ▶️ Run the API
 mvn spring-boot:run
@@ -146,7 +156,7 @@ databasechangeloglock
 🔑 Get Access Token (DEV)
 Password Grant (Postman / curl)
 POST
-
+````
 http://localhost:8081/realms/blog/protocol/openid-connect/token
 Body (x-www-form-urlencoded):
 
@@ -161,6 +171,7 @@ curl -X POST "http://localhost:8081/realms/blog/protocol/openid-connect/token" \
   -d "grant_type=password" \
   -d "username=author1" \
   -d "password=secret"
+````
 Use the returned access_token in API calls:
 
 Authorization: Bearer <ACCESS_TOKEN>
@@ -179,11 +190,10 @@ q → keyword search (title OR content)
 page, size, sort
 
 Example:
-
+```
 GET /api/v1/articles?q=bubbles&page=0&size=10&sort=createdAt,desc
-GET
 
-/api/v1/articles/{slug}
+GET /api/v1/articles/{slug}
 Articles (Secured)
 POST /api/v1/articles (AUTHOR / ADMIN)
 
@@ -196,12 +206,10 @@ PUT /api/v1/articles/{id} (AUTHOR / ADMIN)
 DELETE /api/v1/articles/{id} (ADMIN)
 
 Comments
-GET
-
-/api/v1/articles/{slug}/comments
+GET /api/v1/articles/{slug}/comments
 POST (authenticated)
-
 /api/v1/articles/{slug}/comments
 {
   "content": "Great article!"
 }
+```
