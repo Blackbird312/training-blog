@@ -5,6 +5,9 @@ import lombok.*;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+
+import com.novelis.blog.dto.user.UserAuthorDto;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -13,7 +16,8 @@ import java.util.UUID;
 public class ArticleResponse {
 
     private UUID id;
-    private UUID authorId;
+    // private UUID authorId;
+    private UserAuthorDto author;
 
     private String title;
     private String slug;

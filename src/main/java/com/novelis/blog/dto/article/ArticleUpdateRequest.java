@@ -21,4 +21,8 @@ public class ArticleUpdateRequest {
 
     @NotNull
     private Boolean published;
+
+    @NotBlank
+    private String slug;
+
 }

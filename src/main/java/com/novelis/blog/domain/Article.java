@@ -31,6 +31,10 @@ public class Article {
     @Column(name = "author_id", nullable = false)
     private UUID authorId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id", insertable = false, updatable = false)
+    private User author;
+
     @Column(name = "title", nullable = false, length = 255)
     private String title;
 
