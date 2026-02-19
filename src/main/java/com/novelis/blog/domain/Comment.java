@@ -31,6 +31,10 @@ public class Comment {
     @Column(name = "author_id")
     private UUID authorId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id", insertable = false, updatable = false)
+    private User author;
+
     @Column(name = "content", nullable = false, columnDefinition = "text")
     private String content;
 
