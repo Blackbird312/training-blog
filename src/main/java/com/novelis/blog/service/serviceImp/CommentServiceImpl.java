@@ -4,6 +4,7 @@ import com.novelis.blog.repository.ArticleRepository;
 import com.novelis.blog.domain.Comment;
 import com.novelis.blog.dto.comment.CommentCreateRequest;
 import com.novelis.blog.dto.comment.CommentResponse;
+import com.novelis.blog.exception.NotFoundException;
 import com.novelis.blog.mapper.CommentMapper;
 import com.novelis.blog.repository.CommentRepository;
 import com.novelis.blog.service.CommentService;
@@ -32,7 +33,7 @@ public class CommentServiceImpl implements CommentService {
 
         // Ensure article exists
         articleRepository.findById(articleId)
-            .orElseThrow(() -> new IllegalArgumentException("Article not found"));
+            .orElseThrow(() -> new NotFoundException("Article not found"));
 
         Comment comment = Comment.builder()
             .id(UUID.randomUUID())

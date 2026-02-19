@@ -4,6 +4,7 @@ import com.novelis.blog.domain.Article;
 import com.novelis.blog.dto.article.ArticleCreateRequest;
 import com.novelis.blog.dto.article.ArticleResponse;
 import com.novelis.blog.dto.article.ArticleUpdateRequest;
+import com.novelis.blog.exception.NotFoundException;
 import com.novelis.blog.mapper.ArticleMapper;
 import com.novelis.blog.repository.ArticleRepository;
 import com.novelis.blog.service.ArticleService;
@@ -53,7 +54,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Transactional(readOnly = true)
     public ArticleResponse getBySlug(String slug) {
         Article entity = articleRepository.findBySlug(slug)
-                .orElseThrow(() -> new IllegalArgumentException("Article not found"));
+                .orElseThrow(() -> new NotFoundException("Article not found"));
         return articleMapper.toResponse(entity);
     }
 
@@ -74,7 +75,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ArticleResponse update(UUID id, ArticleUpdateRequest request) {
         Article entity = articleRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Article not found"));
+                .orElseThrow(() -> new NotFoundException("Article not found"));
 
         articleMapper.updateEntityFromDto(request, entity);
 
@@ -92,7 +93,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void delete(UUID id) {
         if (!articleRepository.existsById(id)) {
-            throw new IllegalArgumentException("Article not found");
+            throw new NotFoundException("Article not found");
         }
         articleRepository.deleteById(id);
     }
